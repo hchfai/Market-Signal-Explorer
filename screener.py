@@ -39,7 +39,7 @@ CRYPTO_SYMBOLS = [
 ]
 
 
-def _screen_ticker(ticker, asset_type="stock"):
+def _screen_ticker(ticker, asset_type="stock", newsapi_key=None):
     """Try to fetch and signal one ticker; return row for results df, or None if fails."""
     try:
         if asset_type == "stock":
@@ -53,7 +53,20 @@ def _screen_ticker(ticker, asset_type="stock"):
 
         df = add_all_indicators(df)
         latest, prev = df.iloc[-1], df.iloc[-2]
-        signal = generate_signal(latest, prev, sentiment_score=None)
+
+        # Fetch sentiment if NewsAPI key available
+        sentiment_score = None
+        if newsapi_key:
+            from sentiment import get_news_sentiment
+
+            sent, _ = get_news_sentiment(ticker, newsapi_key, page_size=10)
+            sentiment_score = sent
+
+        signal = generate_signal(latest, prev, sentiment_score=sentiment_score)
+
+        # Heat map: how close to BUY (0.4) or SELL (-0.4) threshold?
+        # Normalize score to 0-100 scale: -1 to 1 → 0 to 100
+        heat = max(0, min(100, (signal["score"] + 1) / 2 * 100))
 
         return {
             "ticker": ticker,
@@ -62,16 +75,18 @@ def _screen_ticker(ticker, asset_type="stock"):
             "signal": signal["action"],
             "confidence": signal["confidence"],
             "score": signal["score"],
+            "heat": heat,
         }
     except Exception:
         return None
 
 
-def run_screener(categories=None, limit=None):
+def run_screener(categories=None, limit=None, newsapi_key=None):
     """
     Scan popular assets, return a sorted DataFrame of results.
     categories: list of ("stock_asx", "stock_us", "crypto") or None for all
     limit: max results per category or None for all
+    newsapi_key: optional key to fetch sentiment (improves signal quality)
     """
     if categories is None:
         categories = ["stock_asx", "stock_us", "crypto"]
@@ -87,7 +102,7 @@ def run_screener(categories=None, limit=None):
         tickers_to_check.extend([(t, "crypto") for t in CRYPTO_SYMBOLS])
 
     for ticker, asset_type in tickers_to_check:
-        row = _screen_ticker(ticker, asset_type)
+        row = _screen_ticker(ticker, asset_type, newsapi_key=newsapi_key)
         if row:
             results.append(row)
         time.sleep(0.2)  # Rate-limit politeness
