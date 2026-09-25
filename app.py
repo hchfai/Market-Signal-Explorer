@@ -58,27 +58,42 @@ with tab_screener:
         "and ranks them by strength. Click any ticker to load a full analysis."
     )
 
-    col1, col2 = st.columns(2)
+    st.markdown("**Select which markets to scan:**")
+    col1, col2, col3 = st.columns(3)
     with col1:
-        check_asx = st.checkbox("ASX (Australian)", value=True)
-        check_us = st.checkbox("US stocks", value=True)
+        check_us = st.checkbox("🇺🇸 Wall Street (60+ US)", value=True)
+        check_asx = st.checkbox("🇦🇺 Australian (50+ ASX)", value=True)
     with col2:
-        check_crypto = st.checkbox("Crypto", value=True)
+        check_canadian = st.checkbox("🇨🇦 Canadian (50+ TSX)", value=False)
+        check_crypto = st.checkbox("₿ Crypto (40+)", value=True)
+    with col3:
+        check_global = st.checkbox("🌍 Global (50+ intl)", value=False)
 
     if st.button("🔄 Run Screener", type="primary"):
         categories = []
-        if check_asx:
-            categories.append("stock_asx")
         if check_us:
-            categories.append("stock_us")
+            categories.append("us_wallstreet")
+        if check_canadian:
+            categories.append("canadian")
+        if check_asx:
+            categories.append("australian")
+        if check_global:
+            categories.append("global")
         if check_crypto:
             categories.append("crypto")
 
         if not categories:
             st.error("Pick at least one category.")
         else:
+            total_stocks = sum([
+                (60 if check_us else 0) +
+                (50 if check_canadian else 0) +
+                (50 if check_asx else 0) +
+                (50 if check_global else 0) +
+                (40 if check_crypto else 0)
+            ])
             with st.spinner(
-                "Scanning 50+ assets per category (~1-2 min)... thanks for waiting..."
+                f"Scanning {total_stocks} assets (~2-3 min)... thanks for waiting..."
             ):
                 from screener import run_screener
 
