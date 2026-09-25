@@ -10,36 +10,33 @@ from data_stocks import get_stock_history
 from indicators import add_all_indicators
 from signal_engine import generate_signal
 
-# Popular ASX stocks
+# Top 50+ ASX stocks by market cap + popular ETFs
 ASX_TICKERS = [
-    "CBA.AX",  # Commonwealth Bank
-    "BHP.AX",  # BHP Billiton
-    "NAB.AX",  # NAB
-    "ANZ.AX",  # ANZ
-    "WBC.AX",  # Westpac
-    "TLS.AX",  # Telstra
-    "WES.AX",  # Wesfarmers
-    "MQG.AX",  # Macquarie
-    "VAS.AX",  # Vanguard All-Ordinaries
-    "VGS.AX",  # Vanguard Global Shares
+    "CBA.AX", "BHP.AX", "NAB.AX", "ANZ.AX", "WBC.AX", "TLS.AX", "WES.AX", "MQG.AX",
+    "AMP.AX", "APT.AX", "ASX.AX", "APA.AX", "AWC.AX", "BXB.AX", "COL.AX", "CSL.AX",
+    "DXN.AX", "FMG.AX", "GMG.AX", "GUD.AX", "IAG.AX", "JHX.AX", "MND.AX", "MPL.AX",
+    "NWL.AX", "ORE.AX", "ORI.AX", "PMV.AX", "QAN.AX", "REH.AX", "RMD.AX", "SCG.AX",
+    "SUN.AX", "TCL.AX", "TPM.AX", "TWE.AX", "VCX.AX", "VEA.AX", "VGS.AX", "VAS.AX",
+    "VOC.AX", "WAM.AX", "WPL.AX", "XJO.AX", "YOW.AX", "Z1P.AX",
 ]
 
-# Popular US stocks
+# Top 50+ US stocks (mega-cap, large-cap, growth)
 US_TICKERS = [
-    "AAPL",  # Apple
-    "MSFT",  # Microsoft
-    "GOOGL",  # Google
-    "AMZN",  # Amazon
-    "TSLA",  # Tesla
-    "NVDA",  # Nvidia
-    "META",  # Meta
-    "JPM",  # JPMorgan
-    "V",  # Visa
-    "JNJ",  # Johnson & Johnson
+    "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "JPM", "V", "JNJ",
+    "WMT", "PG", "MA", "HD", "NFLX", "DIS", "ADBE", "CRM", "PYPL", "IBM",
+    "INTC", "AMD", "QCOM", "CSCO", "ORCL", "AVGO", "ASML", "NOW", "SHOP", "INTU",
+    "SQ", "ROKU", "SNAP", "TWTR", "PINS", "ZM", "DKNG", "DASH", "UBER", "LYFT",
+    "NIO", "PLTR", "COIN", "MSTR", "RIOT", "MARA", "CLSK", "HUT", "F", "GM",
+    "BA", "MMM", "CAT", "DE", "GE", "HON",
 ]
 
-# Popular crypto
-CRYPTO_SYMBOLS = ["BTC", "ETH", "SOL", "ADA", "XRP", "DOGE", "AVAX", "LINK"]
+# Top 40+ crypto by market cap
+CRYPTO_SYMBOLS = [
+    "BTC", "ETH", "SOL", "ADA", "XRP", "DOGE", "AVAX", "LINK", "DOT", "MATIC",
+    "LTC", "TRX", "BCH", "SHIB", "UNI", "ATOM", "XLM", "ALGO", "NEAR", "ARB",
+    "OP", "ARBITRUM", "BASE", "GALA", "MANA", "SAND", "ENS", "STX", "ICP", "FLOW",
+    "FIL", "THETA", "VET", "EOS", "TEZOS", "APTOS", "SEI", "SUI", "BLUR", "GMX",
+]
 
 
 def _screen_ticker(ticker, asset_type="stock"):

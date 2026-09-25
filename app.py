@@ -77,10 +77,14 @@ with tab_screener:
         if not categories:
             st.error("Pick at least one category.")
         else:
-            with st.spinner("Scanning popular assets... this takes ~30 seconds"):
+            with st.spinner(
+                "Scanning 50+ assets per category (~1-2 min)... thanks for waiting..."
+            ):
                 from screener import run_screener
 
-                results = run_screener(categories=categories, limit=20)
+                results = run_screener(
+                    categories=categories, limit=None, newsapi_key=cfg.get("NEWSAPI_KEY")
+                )
 
             if results is None:
                 st.warning(
@@ -93,16 +97,26 @@ with tab_screener:
                     use_container_width=True,
                     hide_index=True,
                     column_config={
-                        "ticker": st.column_config.TextColumn("Ticker", width="small"),
-                        "asset_type": st.column_config.TextColumn("Type", width="small"),
-                        "price": st.column_config.NumberColumn("Price", format="%.4f"),
-                        "signal": st.column_config.TextColumn("Signal", width="small"),
-                        "confidence": st.column_config.TextColumn("Confidence", width="small"),
-                        "score": st.column_config.NumberColumn("Score", format="%.2f"),
+                        "ticker": st.column_config.TextColumn("Ticker", width="80px"),
+                        "asset_type": st.column_config.TextColumn("Type", width="60px"),
+                        "price": st.column_config.NumberColumn("Price", format="%.4f", width="80px"),
+                        "signal": st.column_config.TextColumn("Signal", width="70px"),
+                        "confidence": st.column_config.TextColumn("Conf.", width="70px"),
+                        "score": st.column_config.NumberColumn("Score", format="%.2f", width="70px"),
+                        "heat": st.column_config.ProgressColumn(
+                            "Heat 🔥",
+                            min_value=0,
+                            max_value=100,
+                            help="0=bearish, 50=neutral, 100=bullish. How close to triggering a signal.",
+                        ),
                     },
                 )
 
-                st.markdown("**Copy a ticker from above**, paste it in the Deep Dive tab → Analyze.")
+                st.markdown(
+                    "**Heat column:** 0-50 = approaching SELL, 50-100 = approaching BUY. "
+                    "Higher = warmer (closer to signal threshold)."
+                )
+                st.markdown("**Copy a ticker**, paste in Deep Dive tab → Analyze for full details.")
 
 # ============================================================================
 # DEEP DIVE TAB
