@@ -61,13 +61,13 @@ with tab_screener:
     st.markdown("**Select which markets to scan:**")
     col1, col2, col3 = st.columns(3)
     with col1:
-        check_us = st.checkbox("🇺🇸 Wall Street (60+ US)", value=True)
-        check_asx = st.checkbox("🇦🇺 Australian (50+ ASX)", value=True)
+        check_us = st.checkbox("🇺🇸 Wall Street (20 US)", value=True)
+        check_asx = st.checkbox("🇦🇺 Australian (20 ASX)", value=True)
     with col2:
-        check_canadian = st.checkbox("🇨🇦 Canadian (50+ TSX)", value=False)
+        check_canadian = st.checkbox("🇨🇦 Canadian (15 TSX)", value=False)
         check_crypto = st.checkbox("₿ Crypto (40+)", value=True)
     with col3:
-        check_global = st.checkbox("🌍 Global (50+ intl)", value=False)
+        check_global = st.checkbox("🌍 Global (15 intl)", value=False)
 
     if st.button("🔄 Run Screener", type="primary"):
         categories = []
@@ -86,15 +86,15 @@ with tab_screener:
             st.error("Pick at least one category.")
         else:
             total_stocks = (
-                (60 if check_us else 0) +
-                (50 if check_canadian else 0) +
-                (50 if check_asx else 0) +
-                (50 if check_global else 0) +
+                (20 if check_us else 0) +
+                (15 if check_canadian else 0) +
+                (20 if check_asx else 0) +
+                (15 if check_global else 0) +
                 (40 if check_crypto else 0)
             )
             with st.spinner(
-                f"Scanning {total_stocks} assets (~3-4 min, API rate-limits apply)... "
-                f"sit tight, this is normal."
+                f"Scanning {total_stocks} assets (~1-2 min)... "
+                f"getting signals from Yahoo Finance & CoinGecko..."
             ):
                 from screener import run_screener
 
