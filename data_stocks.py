@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 import yfinance as yf
 
 
-def get_stock_history(ticker, days=365, retries=2):
+def get_stock_history(ticker, days=365, retries=3):
     """Return a DataFrame with Open/High/Low/Close/Volume, or None on failure."""
     end = datetime.now()
     start = end - timedelta(days=int(days) + 5)
@@ -21,13 +21,15 @@ def get_stock_history(ticker, days=365, retries=2):
     for attempt in range(retries + 1):
         try:
             data = yf.Ticker(symbol).history(
-                start=start, end=end, interval="1d", auto_adjust=True
+                start=start, end=end, interval="1d", auto_adjust=True, prepost=False
             )
             if data is not None and not data.empty:
                 return data[["Open", "High", "Low", "Close", "Volume"]].dropna()
         except Exception:
             pass
         if attempt < retries:
-            time.sleep(2 * (attempt + 1))
+            # Exponential backoff: 1s, 2s, 4s, 8s
+            wait_time = 0.5 * (2 ** (attempt + 1))
+            time.sleep(wait_time)
 
     return None

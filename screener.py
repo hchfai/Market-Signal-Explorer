@@ -132,7 +132,10 @@ def run_screener(categories=None, limit=None, newsapi_key=None):
         row = _screen_ticker(ticker, asset_type, newsapi_key=newsapi_key)
         if row:
             results.append(row)
-        time.sleep(0.2)  # Rate-limit politeness
+        # Rate-limiting: longer delays to avoid API hammering
+        # Crypto is faster, stocks need more breathing room
+        delay = 0.5 if asset_type == "stock" else 0.3
+        time.sleep(delay)
 
     if not results:
         return None

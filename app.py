@@ -85,15 +85,16 @@ with tab_screener:
         if not categories:
             st.error("Pick at least one category.")
         else:
-            total_stocks = sum([
+            total_stocks = (
                 (60 if check_us else 0) +
                 (50 if check_canadian else 0) +
                 (50 if check_asx else 0) +
                 (50 if check_global else 0) +
                 (40 if check_crypto else 0)
-            ])
+            )
             with st.spinner(
-                f"Scanning {total_stocks} assets (~2-3 min)... thanks for waiting..."
+                f"Scanning {total_stocks} assets (~3-4 min, API rate-limits apply)... "
+                f"sit tight, this is normal."
             ):
                 from screener import run_screener
 
